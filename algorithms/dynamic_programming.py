@@ -1,42 +1,42 @@
 # Dynamic Programming Algorithm for Longest Palindromic Substring
-from typing import Tuple, Dict, Any, List
-
-def longest_palindrome(text: str, trace: bool = False) -> Tuple[str, Dict[str, Any]]:
-    n = len(text)
-    if n < 2:
-        meta = {'start_index': 0, 'end_index': n-1, 'execution_time_ms': 0.0, 'algorithm_used': 'dp', 'steps': [] if trace else None}
-        return text, meta
-    import time
-    start_time = time.time()
-    dp = [[False]*n for _ in range(n)]
-    max_len = 1
+def longest_palindrome(s, trace = False):
+    n = len(s)
+    # Bảng để lưu trữ thông tin về chuỗi con đối xứng, ban đầu tất cả là False với kích thước n x n
+    # dp[i][j] = True nếu s[i..j] là chuỗi đối xứng
+    dp = [[False] * n for _ in range(n)]
+    
+    # dp[i][j] nếu chuỗi con từ [i tới j] là chuỗi đối xứng hoặc không
     start = 0
-    steps: List[Dict[str, Any]] = []
+    maxLen = 1
+    
+    # Tất cả chuỗi con dài 1 ký tự đều là chuỗi đối xứng
     for i in range(n):
         dp[i][i] = True
-        if trace:
-            steps.append({'event': 'dp-fill', 'i': i, 'j': i, 'value': True})
-    for i in range(n-1):
-        if text[i] == text[i+1]:
-            dp[i][i+1] = True
-            start = i
-            max_len = 2
-            if trace:
-                steps.append({'event': 'dp-fill', 'i': i, 'j': i+1, 'value': True})
-    for length in range(3, n+1):
-        for i in range(n-length+1):
-            j = i + length - 1
-            if text[i] == text[j] and dp[i+1][j-1]:
-                dp[i][j] = True
+    
+    # Kiểm tra chuỗi con dài 2 ký tự
+    for i in range(n - 1):
+        if s[i] == s[i + 1]:
+            dp[i][i + 1] = True
+            if maxLen == 1:
                 start = i
-                max_len = length
-                if trace:
-                    steps.append({'event': 'dp-fill', 'i': i, 'j': j, 'value': True})
-            elif trace:
-                steps.append({'event': 'dp-fill', 'i': i, 'j': j, 'value': False})
-    end = start + max_len - 1
-    exec_time = (time.time() - start_time) * 1000
-    meta = {'start_index': start, 'end_index': end, 'execution_time_ms': exec_time, 'algorithm_used': 'dp'}
-    if trace:
-        meta['steps'] = steps
-    return text[start:start+max_len], meta
+                maxLen = 2
+                
+    # Kiểm tra chuỗi con dài từ 3 tới n
+    for length in range(3, n+1):
+        for i in range(n - length + 1):
+            j = i + length - 1
+            
+            # Nếu s[i] == s[j] thì kiểm tra tiếp cho chuôi [i+1..j-1]
+            if s[i] == s[j] and dp[i + 1][j - 1]:
+                dp[i][j] = True
+                if length > maxLen:
+                    start = i
+                    maxLen = length
+                    
+    return s[start:start + maxLen]
+
+# Ví dụ sử dụng
+if __name__ == "__main__":
+    input_str = "racecar"
+    result = longest_palindrome(input_str)
+    print(f"Chuỗi con đối xứng dài nhất trong '{input_str}' là: '{result}'") 
