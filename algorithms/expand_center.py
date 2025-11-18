@@ -24,6 +24,9 @@ def longest_palindrome(s):
 
 # Test
 if __name__ == "__main__":
-    input_str = "日本語日本"
+    input_str = "日本語本日"
+    print("repr:", repr(input_str))
+    print("length:", len(input_str))
+    print("chars:", list(input_str))
     result = longest_palindrome(input_str)
-    print(f"Chuỗi con đối xứng dài nhất trong '{input_str}' là: '{result}'")
+    print(f"Longest palindrome: '{result}' (length {len(result)})")
