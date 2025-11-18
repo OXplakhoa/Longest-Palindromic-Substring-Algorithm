@@ -60,7 +60,7 @@ def longest_palindrome(s, trace = False):
 
 # Ví dụ sử dụng
 if __name__ == "__main__":
-    input_str = "agbaba"
+    input_str = "日本語日本"
     # run with trace to both collect step events and print dp table as it fills
     result, meta = longest_palindrome(input_str, trace=True)
     print(f"Chuỗi con đối xứng dài nhất trong '{input_str}' là: '{result}'")
