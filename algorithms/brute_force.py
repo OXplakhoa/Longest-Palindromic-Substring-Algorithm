@@ -34,6 +34,6 @@ def longest_palindrome(s, trace = False):
 
 # Ví dụ sử dụng
 if __name__ == "__main__":
-    input_str = "racecar"
+    input_str = "abba"
     result = longest_palindrome(input_str)
     print(f"Chuỗi con đối xứng dài nhất trong '{input_str}' là: '{result[0]}'") 
