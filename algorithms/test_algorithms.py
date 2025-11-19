@@ -47,7 +47,12 @@ def run_tests():
     for name, algo in algorithms:
         print(f"Testing {name} algorithm...")
         for idx, (input_str, expected_set) in enumerate(test_cases):
-            result, meta = algo(input_str)
+            ret = algo(input_str)
+            if isinstance(ret, tuple):
+                result, meta = ret
+            else:
+                result = ret
+                meta = {}
             assert verify_palindrome(input_str, result), f"Not palindrome: {result} in {input_str} ({name})"
             assert result in expected_set, f"Test {idx} failed for {name}: got '{result}', expected {expected_set}"
         print(f"{name} passed all tests!\n")

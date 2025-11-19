@@ -66,11 +66,11 @@ if __name__ == "__main__":
     print(f"Chuỗi con đối xứng dài nhất trong '{input_str}' là: '{result}'")
     print(f"Events collected: {len(meta['steps'])}")
     
-# Visualize varibles
-s = "agbaba"
-n = len(s)
-for length in range(3, n+1):
-    for i in range(n - length + 1):
-        j = i + length - 1
-        print(f"length: {length}, i: {i}, j: {j}")
-print(s[2:5])
+    # Visualize varibles
+    s = "agbaba"
+    n = len(s)
+    for length in range(3, n+1):
+        for i in range(n - length + 1):
+            j = i + length - 1
+            print(f"length: {length}, i: {i}, j: {j}")
+    print(s[2:5])
