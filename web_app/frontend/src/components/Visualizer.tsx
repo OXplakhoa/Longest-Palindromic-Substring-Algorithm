@@ -86,7 +86,7 @@ const Visualizer: React.FC<VisualizerProps> = ({ text, steps, algorithm }) => {
 
         if (currentStep.indices && currentStep.indices.includes(index)) {
             if (currentStep.type === 'select') styles.push('bg-yellow-600 border-yellow-400 scale-110');
-            if (currentStep.type === 'compare') styles.push('bg-blue-600 border-blue-400 scale-110');
+            if (currentStep.type === 'compare') styles.push('bg-yellow-600 border-yellow-400 scale-110'); // Yellow like select for consistency
             if (currentStep.type === 'match') styles.push('bg-green-600 border-green-400 scale-110');
             if (currentStep.type === 'mismatch') styles.push('bg-red-600 border-red-400');
         }
