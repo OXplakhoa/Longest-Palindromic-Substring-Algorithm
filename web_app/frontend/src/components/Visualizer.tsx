@@ -166,7 +166,7 @@ const Visualizer: React.FC<VisualizerProps> = ({ text, steps, algorithm }) => {
                 <div className="flex flex-col gap-4">
                     <h3 className="text-xl font-bold text-gray-300 uppercase tracking-wider">String Visualization</h3>
                     <div className="flex flex-col items-center justify-center gap-3 min-h-[600px] p-8 bg-slate-900/50 rounded-lg border-2 border-slate-700/50">
-                        <div className="flex flex-wrap justify-center gap-3 max-w-full mb-8">
+                        <div className="flex flex-wrap justify-center gap-x-3 gap-y-12 max-w-full mb-8">
                             {displayString.split('').map((char, idx) => (
                                 <div key={idx} className={getCharStyle(idx)}>
                                     {char}
