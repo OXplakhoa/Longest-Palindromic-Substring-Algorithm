@@ -1,37 +1,32 @@
 # Expand Around Centers Algorithm for Longest Palindromic Substring
-from typing import Tuple, Dict, Any, List
-
-def longest_palindrome(text: str, trace: bool = False) -> Tuple[str, Dict[str, Any]]:
-    n = len(text)
-    if n < 2:
-        meta = {'start_index': 0, 'end_index': n-1, 'execution_time_ms': 0.0, 'algorithm_used': 'expand', 'steps': [] if trace else None}
-        return text, meta
-    import time
-    start_time = time.time()
-    start = 0
-    max_len = 0
-    steps: List[Dict[str, Any]] = []
-    def expand(left: int, right: int) -> int:
-        while left >= 0 and right < n and text[left] == text[right]:
-            if trace:
-                steps.append({'event': 'expand', 'left': left, 'right': right, 'match': True})
-            left -= 1
-            right += 1
-        if trace and left >= 0 and right < n:
-            steps.append({'event': 'expand', 'left': left, 'right': right, 'match': False})
-        return right - left - 1
+def longest_palindrome(s):
+    n = len(s)
+    
+    start, maxLen = 0, 1 #maxLen = 1 vì tất cả chuỗi con dài 1 ký tự đều là chuỗi đối xứng
+    
     for i in range(n):
-        len1 = expand(i, i)
-        len2 = expand(i, i+1)
-        length = max(len1, len2)
-        if length > max_len:
-            max_len = length
-            start = i - (length - 1) // 2
-        if trace:
-            steps.append({'event': 'center', 'i': i, 'left': i, 'right': i})
-    end = start + max_len - 1
-    exec_time = (time.time() - start_time) * 1000
-    meta = {'start_index': start, 'end_index': end, 'execution_time_ms': exec_time, 'algorithm_used': 'expand'}
-    if trace:
-        meta['steps'] = steps
-    return text[start:start+max_len], meta
+        
+        # Loop này chạy 2 lần cho cả chẵn và lẻ
+        # j = 0 cho chuỗi lẻ và j = 1 cho chuỗi chẵn
+        for j in range(2): # Handle chuỗi 2 ký tự
+            low, high = i, i + j
+            
+            # Mở rộng từ tâm ra 2 bên trong giới hạn
+            while low >= 0 and high < n and s[low] == s[high]:
+                currLen = high - low + 1
+                if currLen > maxLen:
+                    start = low
+                    maxLen = currLen
+                low -= 1
+                high += 1
+                
+    return s[start:start + maxLen]
+
+# Test
+if __name__ == "__main__":
+    input_str = "日本語本日"
+    print("repr:", repr(input_str))
+    print("length:", len(input_str))
+    print("chars:", list(input_str))
+    result = longest_palindrome(input_str)
+    print(f"Longest palindrome: '{result}' (length {len(result)})")
