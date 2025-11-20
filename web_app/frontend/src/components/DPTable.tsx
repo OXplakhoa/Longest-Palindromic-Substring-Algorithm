@@ -70,7 +70,7 @@ const DPTable: React.FC<DPTableProps> = ({ n, steps, currentIndex }) => {
                                         className={`w-8 h-8 flex items-center justify-center text-xs rounded ${bgColor} ${textColor} transition-colors duration-300 flex-shrink-0`}
                                         title={`dp[${rIdx}][${cIdx}]`}
                                     >
-                                        {cell === true ? 'T' : cell === false ? 'F' : ''}
+                                        {cell === true ? '1' : cell === false ? '0' : ''}
                                     </div>
                                 );
                             })}

@@ -36,10 +36,10 @@ const InputSection: React.FC<InputSectionProps> = ({
                         onChange={(e) => setAlgorithm(e.target.value as Algorithm)}
                         className="w-full bg-slate-700 border border-slate-600 rounded px-4 py-2 text-white focus:outline-none focus:border-blue-500 transition-colors"
                     >
-                        <option value="brute_force">Brute Force (O(N³))</option>
-                        <option value="dynamic_programming">Dynamic Programming (O(N²))</option>
-                        <option value="expand_center">Expand Around Center (O(N²))</option>
-                        <option value="manacher">Manacher's Algorithm (O(N))</option>
+                        <option value="brute_force">Brute Force (O(N³), O(1))</option>
+                        <option value="dynamic_programming">Dynamic Programming (O(N²), O(N²))</option>
+                        <option value="expand_center">Expand Around Center (O(N²), O(1))</option>
+                        <option value="manacher">Manacher's Algorithm (O(N), O(N))</option>
                     </select>
                 </div>
 
