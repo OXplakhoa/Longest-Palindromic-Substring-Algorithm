@@ -1,12 +1,15 @@
-import React, { useState, useEffect, useRef } from 'react';
-import type { VisualizationStep } from '../types';   
+import React, { useState, useEffect } from 'react';
+import type { VisualizationStep, Algorithm } from '../types';
 import { Play, Pause, SkipBack, SkipForward, RefreshCw } from 'lucide-react';
 import clsx from 'clsx';
+import PseudoCode from './PseudoCode';
+import StepLog from './StepLog';
+import DPTable from './DPTable';
 
 interface VisualizerProps {
     text: string;
     steps: VisualizationStep[];
-    algorithm: string;
+    algorithm: Algorithm;
 }
 
 const Visualizer: React.FC<VisualizerProps> = ({ text, steps, algorithm }) => {
@@ -15,14 +18,15 @@ const Visualizer: React.FC<VisualizerProps> = ({ text, steps, algorithm }) => {
     const [speed, setSpeed] = useState(820);
     const [displayString, setDisplayString] = useState(text);
     
-    // Refs for auto-scrolling or other imperative actions if needed
-    const containerRef = useRef<HTMLDivElement>(null);
+    // Track max palindrome found so far
+    const [maxPalindrome, setMaxPalindrome] = useState<{start: number, end: number, length: number} | null>(null);
 
     useEffect(() => {
         setCurrentStepIndex(0);
         setIsPlaying(false);
         setDisplayString(text);
-    }, [steps, text]);
+        setMaxPalindrome(null);
+    }, [steps, text, algorithm]);
 
     useEffect(() => {
         let interval: number;
@@ -35,7 +39,7 @@ const Visualizer: React.FC<VisualizerProps> = ({ text, steps, algorithm }) => {
                     }
                     return prev + 1;
                 });
-            }, speed);
+            }, 1050 - speed);
         } else if (currentStepIndex >= steps.length - 1) {
             setIsPlaying(false);
         }
@@ -44,10 +48,12 @@ const Visualizer: React.FC<VisualizerProps> = ({ text, steps, algorithm }) => {
 
     const currentStep = steps[currentStepIndex];
 
-    // Handle Manacher transformation
+    // Update state based on current step
     useEffect(() => {
-        if (algorithm === 'manacher' && steps.length > 0) {
-            // Find the transform step
+        if (!currentStep) return;
+
+        // Manacher transformation
+        if (algorithm === 'manacher') {
             const transformStep = steps.find(s => s.type === 'transform');
             if (transformStep && transformStep.string) {
                 setDisplayString(transformStep.string);
@@ -55,7 +61,19 @@ const Visualizer: React.FC<VisualizerProps> = ({ text, steps, algorithm }) => {
         } else {
             setDisplayString(text);
         }
-    }, [algorithm, steps, text]);
+
+        // Update max palindrome
+        if (currentStep.type === 'update_max' && currentStep.start !== undefined && currentStep.end !== undefined && currentStep.length !== undefined) {
+            setMaxPalindrome({
+                start: currentStep.start,
+                end: currentStep.end,
+                length: currentStep.length
+            });
+        } else if (currentStepIndex === 0) {
+            setMaxPalindrome(null);
+        }
+    }, [currentStep, algorithm, steps, text, currentStepIndex]);
+
 
     // Helper to determine character style
     const getCharStyle = (index: number) => {
@@ -82,81 +100,112 @@ const Visualizer: React.FC<VisualizerProps> = ({ text, steps, algorithm }) => {
                 styles.push('bg-indigo-600 border-indigo-400 opacity-70');
             }
         }
+
         // Highlight max palindrome found so far
-        // This requires tracking state across steps or looking at current step properties
-        // For simplicity, we'll just highlight if the current step explicitly says update_max
-        if (currentStep.type === 'update_max' && currentStep.start !== undefined && currentStep.end !== undefined) {
-             if (index >= currentStep.start && index <= currentStep.end) {
-                 styles.push('bg-pink-600 border-pink-400 shadow-[0_0_10px_rgba(236,72,153,0.5)]');
+        if (maxPalindrome && index >= maxPalindrome.start && index <= maxPalindrome.end) {
+             // Use a subtle border or glow if not currently active
+             if (!currentStep.indices?.includes(index)) {
+                 styles.push('border-pink-500 shadow-[0_0_5px_rgba(236,72,153,0.3)]');
+             }
+             // If it IS the update_max step, make it pop
+             if (currentStep.type === 'update_max') {
+                 styles.push('bg-pink-600 border-pink-400 shadow-[0_0_15px_rgba(236,72,153,0.8)] scale-110 z-10');
              }
         }
 
         return clsx(
-            'w-10 h-10 flex items-center justify-center border-2 rounded font-mono text-lg font-bold',
+            'w-14 h-14 flex items-center justify-center border-2 rounded-lg font-mono text-2xl font-bold relative',
             styles
         );
     };
 
-    // DP Table Visualization (simplified)
-    const renderDPTable = () => {
-        if (algorithm !== 'dynamic_programming') return null;
-        // This would be complex to render fully. 
-        // Maybe just show a grid if n is small.
-        return null; 
-    };
-
     return (
         <div className="bg-slate-800 p-6 rounded-lg shadow-lg mb-6">
-            <h2 className="text-2xl font-bold mb-4 text-blue-400">Visualization</h2>
+            <div className="flex justify-between items-center mb-6">
+                <h2 className="text-3xl font-bold text-blue-400">Visualization</h2>
+                {maxPalindrome && (
+                    <div className="bg-pink-900/40 border-2 border-pink-500/60 px-6 py-3 rounded-lg text-pink-200 text-lg">
+                        Current Max: <span className="font-bold text-white text-xl">{displayString.substring(maxPalindrome.start, maxPalindrome.end + 1)}</span> <span className="text-pink-300">(Length: {maxPalindrome.length})</span>
+                    </div>
+                )}
+            </div>
             
             {/* Controls */}
-            <div className="flex items-center justify-between mb-6 bg-slate-900 p-4 rounded">
-                <div className="flex items-center gap-2">
-                    <button onClick={() => setCurrentStepIndex(0)} className="p-2 hover:bg-slate-700 rounded text-gray-300"><SkipBack size={20} /></button>
-                    <button onClick={() => setIsPlaying(!isPlaying)} className="p-2 hover:bg-slate-700 rounded text-white bg-blue-600">
-                        {isPlaying ? <Pause size={20} /> : <Play size={20} />}
+            <div className="flex items-center justify-between mb-8 bg-slate-900 p-5 rounded-lg border-2 border-slate-700">
+                <div className="flex items-center gap-3">
+                    <button onClick={() => setCurrentStepIndex(0)} className="p-3 hover:bg-slate-700 rounded-lg text-gray-300 transition-colors"><SkipBack size={24} /></button>
+                    <button onClick={() => setIsPlaying(!isPlaying)} className="p-3 hover:bg-blue-700 rounded-lg text-white bg-blue-600 transition-colors shadow-xl shadow-blue-900/30">
+                        {isPlaying ? <Pause size={24} /> : <Play size={24} />}
                     </button>
-                    <button onClick={() => setCurrentStepIndex(Math.min(steps.length - 1, currentStepIndex + 1))} className="p-2 hover:bg-slate-700 rounded text-gray-300"><SkipForward size={20} /></button>
-                    <button onClick={() => {setCurrentStepIndex(0); setIsPlaying(false);}} className="p-2 hover:bg-slate-700 rounded text-gray-300"><RefreshCw size={20} /></button>
+                    <button onClick={() => setCurrentStepIndex(Math.min(steps.length - 1, currentStepIndex + 1))} className="p-3 hover:bg-slate-700 rounded-lg text-gray-300 transition-colors"><SkipForward size={24} /></button>
+                    <button onClick={() => {setCurrentStepIndex(0); setIsPlaying(false);}} className="p-3 hover:bg-slate-700 rounded-lg text-gray-300 transition-colors"><RefreshCw size={24} /></button>
                 </div>
                 
-                <div className="flex items-center gap-4">
-                    <div className="text-sm text-gray-400">
-                        Step {currentStepIndex + 1} / {steps.length}
+                <div className="flex items-center gap-8">
+                    <div className="text-lg text-gray-300 font-mono font-semibold">
+                        Step <span className="text-blue-400 text-xl">{currentStepIndex + 1}</span> / {steps.length}
                     </div>
-                    <div className="flex items-center gap-2">
-                        <span className="text-xs text-gray-400">Speed</span>
+                    <div className="flex items-center gap-4">
+                        <span className="text-sm text-gray-400 uppercase font-bold tracking-wider">Speed</span>
                         <input 
                             type="range" 
                             min="50" 
                             max="1000" 
                             step="50"
-                            value={1050 - speed} // Invert so right is faster
+                            value={1050 - speed} 
                             onChange={(e) => setSpeed(1050 - Number(e.target.value))}
-                            className="w-24 accent-blue-500"
+                            className="w-40 accent-blue-500 cursor-pointer h-2"
                         />
                     </div>
                 </div>
             </div>
 
-            {/* String Display */}
-            <div className="flex flex-wrap justify-center gap-2 mb-8 min-h-[60px]">
-                {displayString.split('').map((char, idx) => (
-                    <div key={idx} className={getCharStyle(idx)}>
-                        {char}
+            {/* Main Layout: Left (String) | Right (Pseudo-code + Execution Log) */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* LEFT SIDE: String Visualization */}
+                <div className="flex flex-col gap-4">
+                    <h3 className="text-xl font-bold text-gray-300 uppercase tracking-wider">String Visualization</h3>
+                    <div className="flex flex-col items-center justify-center gap-3 min-h-[600px] p-8 bg-slate-900/50 rounded-lg border-2 border-slate-700/50">
+                        <div className="flex flex-wrap justify-center gap-3 max-w-full">
+                            {displayString.split('').map((char, idx) => (
+                                <div key={idx} className={getCharStyle(idx)}>
+                                    {char}
+                                    {/* Index label */}
+                                    <span className="absolute -bottom-7 text-xs text-gray-400 font-semibold border-none">{idx}</span>
+                                </div>
+                            ))}
+                        </div>
+                        {/* Current Step Description */}
+                        <div className="mt-8 w-full max-w-2xl">
+                            <div className="bg-slate-800 p-6 rounded-lg border-l-4 border-blue-500 shadow-lg">
+                                <p className="text-lg text-gray-200 leading-relaxed">
+                                    {currentStep ? currentStep.description : 'Ready to visualize'}
+                                </p>
+                            </div>
+                        </div>
                     </div>
-                ))}
+                </div>
+
+                {/* RIGHT SIDE: Pseudo-code + Execution Log */}
+                <div className="flex flex-col gap-6">
+                    {/* Pseudo-Code */}
+                    <div className="h-[350px]">
+                        <PseudoCode algorithm={algorithm} currentLine={currentStep?.line} />
+                    </div>
+
+                    {/* Execution Log */}
+                    <div className="h-[350px]">
+                        <StepLog steps={steps} currentIndex={currentStepIndex} />
+                    </div>
+                </div>
             </div>
 
-            {/* Step Description */}
-            <div className="bg-slate-900 p-4 rounded border-l-4 border-blue-500">
-                <p className="text-lg text-gray-200">
-                    {currentStep ? currentStep.description : 'Ready to visualize'}
-                </p>
-            </div>
-
-            {/* DP Table Placeholder */}
-            {renderDPTable()}
+            {/* DP Table - Below if Dynamic Programming is selected */}
+            {algorithm === 'dynamic_programming' && (
+                <div className="mt-6 h-[400px]">
+                    <DPTable n={text.length} steps={steps} currentIndex={currentStepIndex} />
+                </div>
+            )}
         </div>
     );
 };

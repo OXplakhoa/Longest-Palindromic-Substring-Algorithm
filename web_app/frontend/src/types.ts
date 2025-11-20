@@ -1,5 +1,5 @@
 export interface VisualizationStep {
-    type: 'init' | 'select' | 'compare' | 'match' | 'mismatch' | 'update_max' | 'found' | 'center' | 'transform' | 'mirror' | 'update_center' | 'dp_update' | 'dp_check';
+    type: 'init' | 'select' | 'compare' | 'match' | 'mismatch' | 'update_max' | 'found' | 'center' | 'transform' | 'mirror' | 'update_center' | 'dp_update' | 'dp_check' | 'loop_i' | 'check' | 'expand' | 'loop_len' | 'calc_mirror' | 'init_vars' | 'select_center';
     description: string;
     indices?: number[];
     index?: number;
@@ -13,6 +13,7 @@ export interface VisualizationStep {
     string?: string;
     row?: number;
     col?: number;
+    line?: number;
 }
 
 export interface BenchmarkResult {
