@@ -52,7 +52,7 @@ const Visualizer: React.FC<VisualizerProps> = ({ text, steps, algorithm }) => {
     useEffect(() => {
         if (!currentStep) return;
 
-        // Manacher transformation
+        // Manacher shows transformed string for visualization
         if (algorithm === 'manacher') {
             const transformStep = steps.find(s => s.type === 'transform');
             if (transformStep && transformStep.string) {
@@ -62,7 +62,7 @@ const Visualizer: React.FC<VisualizerProps> = ({ text, steps, algorithm }) => {
             setDisplayString(text);
         }
 
-        // Update max palindrome
+        // Update max palindrome (indices are always for ORIGINAL string)
         if (currentStep.type === 'update_max' && currentStep.start !== undefined && currentStep.end !== undefined && currentStep.length !== undefined) {
             setMaxPalindrome({
                 start: currentStep.start,
@@ -125,7 +125,7 @@ const Visualizer: React.FC<VisualizerProps> = ({ text, steps, algorithm }) => {
                 <h2 className="text-3xl font-bold text-blue-400">Visualization</h2>
                 {maxPalindrome && (
                     <div className="bg-pink-900/40 border-2 border-pink-500/60 px-6 py-3 rounded-lg text-pink-200 text-lg">
-                        Current Max: <span className="font-bold text-white text-xl">{displayString.substring(maxPalindrome.start, maxPalindrome.end + 1)}</span> <span className="text-pink-300">(Length: {maxPalindrome.length})</span>
+                        Current Max: <span className="font-bold text-white text-xl">{text.substring(maxPalindrome.start, maxPalindrome.end + 1)}</span> <span className="text-pink-300">(Length: {maxPalindrome.length})</span>
                     </div>
                 )}
             </div>
@@ -166,17 +166,41 @@ const Visualizer: React.FC<VisualizerProps> = ({ text, steps, algorithm }) => {
                 <div className="flex flex-col gap-4">
                     <h3 className="text-xl font-bold text-gray-300 uppercase tracking-wider">String Visualization</h3>
                     <div className="flex flex-col items-center justify-center gap-3 min-h-[600px] p-8 bg-slate-900/50 rounded-lg border-2 border-slate-700/50">
-                        <div className="flex flex-wrap justify-center gap-3 max-w-full">
+                        <div className="flex flex-wrap justify-center gap-3 max-w-full mb-8">
                             {displayString.split('').map((char, idx) => (
                                 <div key={idx} className={getCharStyle(idx)}>
                                     {char}
-                                    {/* Index label */}
-                                    <span className="absolute -bottom-7 text-xs text-gray-400 font-semibold border-none">{idx}</span>
+                                    {/* Index label - always visible */}
+                                    <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-xs text-gray-300 font-bold border-none bg-slate-900/80 px-1 rounded">{idx}</span>
                                 </div>
                             ))}
                         </div>
+                        
+                        {/* Current Max Palindrome Display */}
+                        {maxPalindrome && (
+                            <div className="mt-6 bg-gradient-to-r from-pink-900/50 to-purple-900/50 border-2 border-pink-500/70 rounded-xl p-6 shadow-2xl">
+                                <div className="text-center">
+                                    <p className="text-pink-300 text-sm uppercase tracking-wider mb-2 font-semibold">Current Maximum Palindrome</p>
+                                    <p className="text-white text-4xl font-bold mb-3 font-mono tracking-wider">
+                                        "{text.substring(maxPalindrome.start, maxPalindrome.end + 1)}"
+                                    </p>
+                                    <div className="flex justify-center gap-6 text-sm">
+                                        <div className="text-pink-200">
+                                            <span className="text-gray-400">Start:</span> <span className="font-mono font-bold text-white">{maxPalindrome.start}</span>
+                                        </div>
+                                        <div className="text-pink-200">
+                                            <span className="text-gray-400">End:</span> <span className="font-mono font-bold text-white">{maxPalindrome.end}</span>
+                                        </div>
+                                        <div className="text-pink-200">
+                                            <span className="text-gray-400">Length:</span> <span className="font-mono font-bold text-white">{maxPalindrome.length}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                        
                         {/* Current Step Description */}
-                        <div className="mt-8 w-full max-w-2xl">
+                        <div className="mt-4 w-full max-w-2xl">
                             <div className="bg-slate-800 p-6 rounded-lg border-l-4 border-blue-500 shadow-lg">
                                 <p className="text-lg text-gray-200 leading-relaxed">
                                     {currentStep ? currentStep.description : 'Ready to visualize'}

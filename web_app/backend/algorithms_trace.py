@@ -184,5 +184,7 @@ def trace_manacher(s: str) -> Generator[Dict[str, Any], None, None]:
     
     max_len = max(P)
     center_index = P.index(max_len)
+    # Convert back to original string indices
     start = (center_index - max_len) // 2
-    yield {"type": "update_max", "start": start, "end": start + max_len - 1, "length": max_len, "description": f"Final max length: {max_len}"}
+    end = start + max_len - 1
+    yield {"type": "update_max", "start": start, "end": end, "length": max_len, "description": f"Final max length: {max_len}"}
