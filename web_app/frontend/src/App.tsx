@@ -3,6 +3,8 @@ import axios from 'axios';
 import InputSection from './components/InputSection';
 import Visualizer from './components/Visualizer';
 import Benchmark from './components/Benchmark';
+import AlgorithmInfo from './components/AlgorithmInfo';
+import TestCaseSelector from './components/TestCaseSelector';
 import type { Algorithm, VisualizationStep, BenchmarkResult } from './types';
 import { Activity } from 'lucide-react';
 
@@ -52,52 +54,81 @@ function App() {
         }
     };
 
+    const handleSelectTestCase = (testText: string) => {
+        setText(testText);
+        // Clear previous results when selecting a new test case
+        setSteps([]);
+        setBenchmarkResults(null);
+    };
+
     return (
         <div className="min-h-screen bg-slate-950 text-white font-sans selection:bg-blue-500 selection:text-white">
-            <div className="container mx-auto px-4 py-8 max-w-5xl">
-                <header className="flex items-center gap-3 mb-8 border-b border-slate-800 pb-6">
-                    <div className="bg-gradient-to-br from-blue-500 to-purple-600 p-3 rounded-lg shadow-lg shadow-blue-500/20">
-                        <Activity size={32} className="text-white" />
+            {/* Header */}
+            <header className="border-b border-slate-800 bg-slate-900/50 backdrop-blur-sm sticky top-0 z-10">
+                <div className="container mx-auto px-4 py-4">
+                    <div className="flex items-center gap-3">
+                        <div className="bg-gradient-to-br from-blue-500 to-purple-600 p-3 rounded-lg shadow-lg shadow-blue-500/20">
+                            <Activity size={28} className="text-white" />
+                        </div>
+                        <div>
+                            <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
+                                Palindrome Visualizer
+                            </h1>
+                            <p className="text-sm text-slate-400">Interactive Algorithm Visualization & Benchmark</p>
+                        </div>
                     </div>
-                    <div>
-                        <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
-                            Palindrome Visualizer
-                        </h1>
-                        <p className="text-slate-400">Interactive Algorithm Visualization & Benchmark</p>
-                    </div>
-                </header>
+                </div>
+            </header>
 
-                {error && (
-                    <div className="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded mb-6">
-                        {error}
-                    </div>
-                )}
+            {/* 3-Column Layout */}
+            <div className="container mx-auto px-4 py-6">
+                <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr_320px] gap-6">
+                    {/* Left Sidebar - Algorithm Info */}
+                    <aside className="hidden lg:block">
+                        <AlgorithmInfo algorithm={algorithm} />
+                    </aside>
 
-                <InputSection
-                    text={text}
-                    setText={setText}
-                    algorithm={algorithm}
-                    setAlgorithm={setAlgorithm}
-                    onVisualize={handleVisualize}
-                    onBenchmark={handleBenchmark}
-                    loading={loading}
-                />
+                    {/* Main Content */}
+                    <main className="min-w-0">
+                        {error && (
+                            <div className="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded mb-6">
+                                {error}
+                            </div>
+                        )}
 
-                {steps.length > 0 && (
-                    <Visualizer
-                        text={text}
-                        steps={steps}
-                        algorithm={algorithm}
-                    />
-                )}
+                        <InputSection
+                            text={text}
+                            setText={setText}
+                            algorithm={algorithm}
+                            setAlgorithm={setAlgorithm}
+                            onVisualize={handleVisualize}
+                            onBenchmark={handleBenchmark}
+                            loading={loading}
+                        />
 
-                <Benchmark
-                    results={benchmarkResults}
-                    loading={loading && !steps.length} // Show loading in benchmark area if not visualizing
-                />
+                        {steps.length > 0 && (
+                            <Visualizer
+                                text={text}
+                                steps={steps}
+                                algorithm={algorithm}
+                            />
+                        )}
+
+                        <Benchmark
+                            results={benchmarkResults}
+                            loading={loading && !steps.length} // Show loading in benchmark area if not visualizing
+                        />
+                    </main>
+
+                    {/* Right Sidebar - Test Case Selector */}
+                    <aside className="hidden lg:block">
+                        <TestCaseSelector onSelectTestCase={handleSelectTestCase} />
+                    </aside>
+                </div>
             </div>
         </div>
     );
 }
 
 export default App;
+
