@@ -64,7 +64,7 @@ function App() {
     return (
         <div className="min-h-screen bg-slate-950 text-white font-sans selection:bg-blue-500 selection:text-white">
             {/* Header */}
-            <header className="border-b border-slate-800 bg-slate-900/50 backdrop-blur-sm sticky top-0 z-10">
+            <header className="border-b border-slate-800 bg-slate-900/50 backdrop-blur-sm top-0 z-10">
                 <div className="container mx-auto px-4 py-4">
                     <div className="flex items-center gap-3">
                         <div className="bg-gradient-to-br from-blue-500 to-purple-600 p-3 rounded-lg shadow-lg shadow-blue-500/20">

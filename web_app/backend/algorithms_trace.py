@@ -11,6 +11,11 @@ def trace_brute_force(s: str) -> Generator[Dict[str, Any], None, None]:
     n = len(s)
     yield {"type": "init", "description": "Starting Brute Force Algorithm", "line": 1}
     
+    # Handle empty string
+    if n == 0:
+        yield {"type": "result", "description": "Empty string - longest palindrome is empty string", "line": 7, "start": 0, "end": 0, "length": 0}
+        return
+    
     max_len = 0
     start_idx = 0
     
@@ -49,6 +54,11 @@ def trace_brute_force(s: str) -> Generator[Dict[str, Any], None, None]:
 def trace_expand_center(s: str) -> Generator[Dict[str, Any], None, None]:
     n = len(s)
     yield {"type": "init", "description": "Starting Expand Around Center Algorithm", "line": 1}
+    
+    # Handle empty string
+    if n == 0:
+        yield {"type": "result", "description": "Empty string - longest palindrome is empty string", "line": 10, "start": 0, "end": 0, "length": 0}
+        return
     
     start_idx = 0
     max_len = 0
@@ -94,6 +104,11 @@ def trace_expand_center(s: str) -> Generator[Dict[str, Any], None, None]:
 def trace_dynamic_programming(s: str) -> Generator[Dict[str, Any], None, None]:
     n = len(s)
     yield {"type": "init", "description": "Starting Dynamic Programming Algorithm", "line": 1}
+    
+    # Handle empty string
+    if n == 0:
+        yield {"type": "result", "description": "Empty string - longest palindrome is empty string", "line": 9, "start": 0, "end": 0, "length": 0}
+        return
     
     dp = [[False] * n for _ in range(n)]
     max_len = 1
@@ -147,6 +162,11 @@ def trace_dynamic_programming(s: str) -> Generator[Dict[str, Any], None, None]:
 
 def trace_manacher(s: str) -> Generator[Dict[str, Any], None, None]:
     yield {"type": "init", "description": "Starting Manacher's Algorithm", "line": 1}
+    
+    # Handle empty string
+    if len(s) == 0:
+        yield {"type": "result", "description": "Empty string - longest palindrome is empty string", "line": 8, "start": 0, "end": 0, "length": 0}
+        return
     
     T = '#'.join('^{}$'.format(s))
     n = len(T)

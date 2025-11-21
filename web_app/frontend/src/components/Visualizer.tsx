@@ -166,15 +166,23 @@ const Visualizer: React.FC<VisualizerProps> = ({ text, steps, algorithm }) => {
                 <div className="flex flex-col gap-4">
                     <h3 className="text-xl font-bold text-gray-300 uppercase tracking-wider">String Visualization</h3>
                     <div className="flex flex-col items-center justify-center gap-3 min-h-[600px] p-8 bg-slate-900/50 rounded-lg border-2 border-slate-700/50">
-                        <div className="flex flex-wrap justify-center gap-x-3 gap-y-12 max-w-full mb-8">
-                            {displayString.split('').map((char, idx) => (
-                                <div key={idx} className={getCharStyle(idx)}>
-                                    {char}
-                                    {/* Index label - always visible */}
-                                    <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-xs text-gray-300 font-bold border-none bg-slate-900/80 px-1 rounded">{idx}</span>
-                                </div>
-                            ))}
-                        </div>
+                        {displayString.length === 0 ? (
+                            <div className="flex flex-col items-center justify-center gap-4">
+                                <div className="text-6xl text-slate-600">∅</div>
+                                <div className="text-xl text-slate-400 font-semibold">Empty String</div>
+                                <div className="text-sm text-slate-500">The longest palindrome of an empty string is an empty string</div>
+                            </div>
+                        ) : (
+                            <div className="flex flex-wrap justify-center gap-x-3 gap-y-12 max-w-full mb-8">
+                                {displayString.split('').map((char, idx) => (
+                                    <div key={idx} className={getCharStyle(idx)}>
+                                        {char}
+                                        {/* Index label - always visible */}
+                                        <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-xs text-gray-300 font-bold border-none bg-slate-900/80 px-1 rounded">{idx}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                         
                         {/* Current Max Palindrome Display */}
                         {maxPalindrome && (
