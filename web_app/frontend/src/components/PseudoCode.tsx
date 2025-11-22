@@ -18,9 +18,9 @@ const ALGORITHM_CODE: Record<Algorithm, string> = {
     expand_center: `function expandCenter(s):
   n = length(s)
   for i from 0 to n-1:
-    # Odd length
+    # Chuỗi lẻ
     expand(i, i)
-    # Even length
+    # Chuỗi chẵn
     expand(i, i+1)
     
   function expand(l, r):
@@ -62,7 +62,7 @@ const PseudoCode: React.FC<PseudoCodeProps> = ({ algorithm, currentLine }) => {
 
     return (
         <div className="bg-slate-900 p-5 rounded-lg font-mono text-base h-full overflow-auto border border-slate-700">
-            <h3 className="text-gray-300 mb-4 font-bold uppercase text-sm tracking-wider">Pseudo-Code</h3>
+            <h3 className="text-gray-300 mb-4 font-bold uppercase text-sm tracking-wider">Mã giả</h3>
             <div className="flex flex-col gap-1">
                 {codeLines.map((line, idx) => (
                     <div 

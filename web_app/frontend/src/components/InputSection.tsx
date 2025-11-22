@@ -16,21 +16,21 @@ const InputSection: React.FC<InputSectionProps> = ({
 }) => {
     return (
         <div className="bg-slate-800 p-6 rounded-lg shadow-lg mb-6">
-            <h2 className="text-2xl font-bold mb-4 text-blue-400">Configuration</h2>
+            <h2 className="text-2xl font-bold mb-4 text-blue-400">Cấu hình</h2>
             <div className="flex flex-col gap-4">
                 <div>
-                    <label className="block text-sm font-medium mb-2 text-gray-300">Input String</label>
+                    <label className="block text-sm font-medium mb-2 text-gray-300">Chuỗi đầu vào</label>
                     <input
                         type="text"
                         value={text}
                         onChange={(e) => setText(e.target.value)}
                         className="w-full bg-slate-700 border border-slate-600 rounded px-4 py-2 text-white focus:outline-none focus:border-blue-500 transition-colors"
-                        placeholder="Enter a string (e.g., babad)"
+                        placeholder="Nhập chuỗi (ví dụ: babad)"
                     />
                 </div>
                 
                 <div>
-                    <label className="block text-sm font-medium mb-2 text-gray-300">Algorithm</label>
+                    <label className="block text-sm font-medium mb-2 text-gray-300">Thuật toán</label>
                     <select
                         value={algorithm}
                         onChange={(e) => setAlgorithm(e.target.value as Algorithm)}
@@ -49,14 +49,14 @@ const InputSection: React.FC<InputSectionProps> = ({
                         disabled={loading}
                         className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        {loading ? 'Processing...' : 'Visualize'}
+                        {loading ? 'Đang xử lý...' : 'Xem minh họa'}
                     </button>
                     <button
                         onClick={onBenchmark}
                         disabled={loading}
                         className="flex-1 bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        Benchmark All
+                        So sánh các thuật toán
                     </button>
                 </div>
             </div>
