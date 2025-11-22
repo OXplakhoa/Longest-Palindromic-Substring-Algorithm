@@ -21,7 +21,7 @@ const StepLog: React.FC<StepLogProps> = ({ steps, currentIndex }) => {
 
     return (
         <div className="bg-slate-900 p-4 rounded-lg h-full overflow-y-auto border border-slate-700 flex flex-col" ref={scrollRef}>
-            <h3 className="text-gray-300 mb-3 font-bold uppercase text-sm tracking-wider sticky top-0 bg-slate-900 py-2 z-10 border-b border-slate-700">Execution Log</h3>
+            <h3 className="text-gray-300 mb-3 font-bold uppercase text-sm tracking-wider sticky top-0 bg-slate-900 py-2 z-10 border-b border-slate-700">Nhật ký thực thi</h3>
             <div className="flex flex-col gap-1.5">
                 {steps.map((step, idx) => (
                     <div 

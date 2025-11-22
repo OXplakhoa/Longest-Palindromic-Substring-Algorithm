@@ -15,8 +15,8 @@ const DPTable: React.FC<DPTableProps> = ({ n, steps, currentIndex }) => {
     if (!showTable) {
         return (
             <div className="bg-slate-900 p-4 rounded-lg h-full border border-slate-700 flex flex-col justify-center items-center text-gray-500">
-                <p className="text-center mb-2">DP Table too large to display</p>
-                <p className="text-xs text-gray-600">String length: {n} (max: {maxTableSize})</p>
+                <p className="text-center mb-2">Bảng DP quá lớn để hiển thị</p>
+                <p className="text-xs text-gray-600">Độ dài chuỗi: {n} (tối đa: {maxTableSize})</p>
             </div>
         );
     }
@@ -38,7 +38,7 @@ const DPTable: React.FC<DPTableProps> = ({ n, steps, currentIndex }) => {
 
     return (
         <div className="bg-slate-900 p-4 rounded-lg h-full overflow-auto border border-slate-700 flex flex-col">
-            <h3 className="text-gray-400 mb-3 font-bold uppercase text-xs tracking-wider">DP Table</h3>
+            <h3 className="text-gray-400 mb-3 font-bold uppercase text-xs tracking-wider">Bảng DP</h3>
             <div className="flex-1 overflow-auto">
                 <div className="inline-block min-w-full">
                     {dp.map((row, rIdx) => (

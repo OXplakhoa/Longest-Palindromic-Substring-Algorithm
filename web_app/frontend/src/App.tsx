@@ -72,17 +72,17 @@ function App() {
                         </div>
                         <div>
                             <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
-                                Palindrome Visualizer
+                                Chuỗi con đối xứng dài nhất
                             </h1>
-                            <p className="text-sm text-slate-400">Interactive Algorithm Visualization & Benchmark</p>
+                            <p className="text-sm text-slate-400">Trực quan hóa & Đo hiệu năng Thuật toán</p>
                         </div>
                     </div>
                 </div>
             </header>
 
             {/* 3-Column Layout */}
-            <div className="container mx-auto px-4 py-6">
-                <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr_320px] gap-6">
+            <div className="max-w-[80%] mx-auto px-4 py-6">
+                <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr_360px] gap-8">
                     {/* Left Sidebar - Algorithm Info */}
                     <aside className="hidden lg:block">
                         <AlgorithmInfo algorithm={algorithm} />

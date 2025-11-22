@@ -34,7 +34,7 @@ const TestCaseSelector: React.FC<TestCaseSelectorProps> = ({ onSelectTestCase })
                 <div className="bg-gradient-to-br from-purple-500 to-pink-600 p-2 rounded-lg">
                     <Beaker size={20} className="text-white" />
                 </div>
-                <h2 className="text-lg font-bold text-purple-400">Test Cases</h2>
+                <h2 className="text-lg font-bold text-purple-400">Bộ kiểm thử</h2>
             </div>
 
             <div className="space-y-3">
@@ -79,7 +79,7 @@ const TestCaseSelector: React.FC<TestCaseSelectorProps> = ({ onSelectTestCase })
                                             <div className="text-xs text-slate-500">
                                                 Expected: {testCase.expected.length === 1 
                                                     ? `"${testCase.expected[0].length > 15 ? testCase.expected[0].substring(0, 15) + '...' : testCase.expected[0]}"`
-                                                    : `${testCase.expected.length} options`}
+                                                    : `${testCase.expected.length} lựa chọn`}
                                             </div>
                                         </button>
                                     ))}
