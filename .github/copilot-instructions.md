@@ -1,51 +1,142 @@
-# Copilot Instructions for This Repo
+# Longest Palindromic Substring - AI Agent Instructions
 
-Purpose: Enable AI agents to quickly build and extend a web app that computes the Longest Palindromic Substring (LPS), compares multiple algorithms (incl. Manacher’s), visualizes steps, and provides a real-world text diff tool.
+## Project Architecture
 
-Repository state and source of truth
-- This repo is currently a design-first project. The canonical spec is in `README.md` (mirrors `idea.txt`).
-- Agents should treat `README.md` as the requirements, APIs, schema, and UI contract.
+This is an **educational visualization tool** for comparing longest palindromic substring algorithms. The codebase has a clear separation:
 
-Architecture (big picture)
-- Algorithms: A) Brute Force, B) Dynamic Programming, C) Expand-Center, D) Manacher’s (linear).
-- Web API (planned):
-  - POST `/api/find-palindrome` { text, algorithm: manacher|expand|dp|brute } → { palindrome, start_index, end_index, execution_time_ms }
-  - POST `/api/compare-algorithms` → array of { algorithm, palindrome, execution_time_ms }
-  - POST `/api/trace-palindrome` { text, algorithm, trace:true } → { palindrome, steps:[{step,event,...}] }
-  - POST `/api/diff` { text_a, text_b } → { operations:[{op,text}], lcs_length, palindrome_a, palindrome_b }
-- Data layer (planned):
-  - `test_cases`, `algorithm_results`, `performance_metrics`
-  - Optional: `visualization_traces` (event logs for step playback), `diff_sessions` (persisted text comparisons)
-- Frontend (planned):
-  - Input + algorithm selection, results panel, performance dashboard (Chart.js), step-by-step visualizer, and Text Compare mode.
+- **`algorithms/`** - Core algorithm implementations (Python)
+- **`web_app/backend/`** - FastAPI server with trace generators
+- **`web_app/frontend/`** - React + TypeScript + Vite visualization UI
 
-Conventions and patterns
-- Algorithms module naming (suggested): `algorithms/{brute_force.py, dynamic_programming.py, expand_center.py, manacher.py}` each exposing `longest_palindrome(text, trace: bool=False)` returning `(result, meta)`; when `trace=True`, include `steps` matching the trace schema below.
-- Trace event schema (by algorithm):
-  - Expand-Center: `{event:"center"|"expand", i, left, right, match?:bool}`
-  - DP: `{event:"dp-fill", i, j, value:true|false}`
-  - Manacher: `{event:"scan"|"expand", i, C, R, P_i}` with transformed string handled client-side
-- Persist traces only when requested; use `run_id` to correlate steps.
-- Endpoints, payload keys, and DB table names should match `README.md` exactly.
+### Data Flow Pattern
+```
+User Input → Frontend (React) → FastAPI Backend → algorithms_trace.py generators
+                                                   ↓
+                                     Yield step-by-step execution events
+                                                   ↓
+                            Frontend visualizes steps with highlighting
+```
 
-Critical workflows (agents should follow)
-- Backend: Prefer FastAPI (Python) with typed Pydantic models; return consistent JSON per `README.md`.
-- Testing for correctness: Use the `test_cases` list in `README.md` to assert 100% correctness across all algorithms; ensure equal-length-optimality (ties allowed).
-- Performance: Include `execution_time_ms` for each run; for compare endpoints, time each algorithm separately.
-- Visualization: When `trace=true`, emit compact step lists; keep payload small (truncate after N steps on very long inputs and return `truncated:true`).
+## Critical Conventions
 
-Integration notes and examples
-- Example request: `POST /api/find-palindrome` `{ "text":"babad", "algorithm":"manacher" }` → `{ "palindrome":"bab", "start_index":0, "end_index":2, "execution_time_ms":1.7, "algorithm_used":"manacher" }`
-- Example trace item (Manacher): `{ "event":"expand", "i":12, "C":12, "R":17, "P_i":5 }`
-- Diff output ops follow LCS backtrack: `equal|insert|delete`; keep order stable for rendering.
+### Algorithm Implementations
+All algorithms in `algorithms/` follow this signature:
+```python
+def longest_palindrome(s: str, trace: bool = False) -> Union[str, Tuple[str, Dict]]:
+    # Returns palindrome string, or (palindrome, metadata) if trace=True
+```
 
-Project file references
-- `README.md`: requirements, APIs, schema, algorithms, test cases, visualization design, diff design
-- `idea.txt`: same content as background notes
+**Key Pattern**: Original algorithms are simple and standalone. For web visualization, **DO NOT modify originals** - instead, create parallel `trace_*` generators in `web_app/backend/algorithms_trace.py`.
 
-Agent priorities (do-first roadmap)
-1) Implement algorithms (incl. Manacher) with a shared interface and tests from `README.md`.
-2) FastAPI backend exposing the four endpoints; add timing and optional trace.
-3) Minimal frontend: input form, algorithm selection, result highlight, and a basic trace player.
-4) Add Text Compare (LCS) view; overlay LPS for A and B.
-5) Optional: persist traces and diff sessions (schema provided).
+### Trace Generator Convention
+Trace generators must yield dictionaries with this structure:
+```python
+{
+    "type": str,           # 'init', 'compare', 'match', 'mismatch', 'update_max', etc.
+    "description": str,    # Vietnamese description for UI (project uses Vietnamese)
+    "indices": [int],      # Array of character indices being operated on
+    "line": int,           # Pseudo-code line reference (optional)
+    # Additional fields based on type
+}
+```
+
+**Example from `trace_brute_force`**:
+```python
+yield {"type": "compare", "indices": [low, high], 
+       "description": f"So sánh s[{low}] và s[{high}]", "line": 4}
+```
+
+### Length Limits for Visualization
+Defined in `web_app/backend/main.py`:
+- **Slow algorithms** (brute_force, dynamic_programming): 100 chars max
+- **Fast algorithms** (expand_center, manacher): 1000 chars max
+
+These prevent timeout on O(n³) and O(n²) space algorithms. **Enforce in `/visualize` endpoint.**
+
+## Key Components
+
+### Frontend Visualizer Pattern
+`Visualizer.tsx` consumes step arrays and:
+1. Highlights characters based on `indices` field
+2. Shows current `description` 
+3. References `line` number in pseudo-code panel
+4. Tracks `maxPalindrome` state across steps
+
+Color scheme uses **Tailwind** with slate backgrounds and gradient accents.
+
+### Benchmark vs Visualize
+- **`/visualize`** - Returns full trace (step array)
+- **`/benchmark`** - Returns only execution times for all 4 algorithms
+
+Benchmarks skip visualization overhead and measure raw algorithm performance.
+
+## Development Workflows
+
+### Running the Application
+```powershell
+# Backend (from project root)
+cd web_app/backend
+python -m uvicorn main:app --reload
+
+# Frontend (from project root)
+cd web_app/frontend
+npm install      # First time only
+npm run dev
+```
+
+**API runs on**: `http://localhost:8000`  
+**Frontend runs on**: Vite default (usually 5173)
+
+### Testing
+```powershell
+# Algorithm unit tests
+cd algorithms
+python test_algorithms.py
+
+# Backend API tests
+cd web_app/backend
+pytest test_api.py
+```
+
+### Adding a New Algorithm
+1. Create `algorithms/new_algo.py` with `longest_palindrome(s, trace=False)` signature
+2. Add `trace_new_algo(s)` generator to `web_app/backend/algorithms_trace.py`
+3. Import in `web_app/backend/main.py` and add to `/visualize` endpoint
+4. Update `Algorithm` type in `web_app/frontend/src/types.ts`
+5. Add test cases to `algorithms/test_algorithms.py`
+
+## Project-Specific Details
+
+### Language Mixing
+- **Code**: English variable names, comments
+- **UI strings**: Vietnamese (`description` fields)
+- **Documentation**: Mix of English and Vietnamese
+
+When adding descriptions, use Vietnamese for user-facing strings.
+
+### TypeScript Types
+All step event types are defined in `types.ts`. Add new event types to the union:
+```typescript
+export interface VisualizationStep {
+    type: 'init' | 'compare' | 'your_new_type' | ...;
+    // ...
+}
+```
+
+### No Database Yet
+Despite schema in `README.md`, database is **not implemented**. Current architecture is stateless request/response.
+
+## Common Pitfalls
+
+1. **Don't import original algorithms with trace=True** - Use separate trace generators
+2. **Check string length limits** - Frontend will error on oversized inputs
+3. **Match event types** - Frontend expects specific `type` values for styling
+4. **Manacher uses transformed string** - Indices in trace refer to transformed string with `#` separators
+5. **Generator exhaustion** - Convert to list in endpoint: `list(trace_func(text))`
+
+## Useful File References
+
+- Algorithm complexity analysis: `complexity_analysis.md`
+- Test cases with Unicode/emoji: `algorithms/test_algorithms.py` lines 8-23
+- Pseudo-code component: `web_app/frontend/src/components/PseudoCode.tsx`
+- DP table visualization: `web_app/frontend/src/components/DPTable.tsx`

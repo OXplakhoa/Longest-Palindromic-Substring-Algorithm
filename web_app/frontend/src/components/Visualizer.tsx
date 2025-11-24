@@ -128,7 +128,7 @@ const Visualizer: React.FC<VisualizerProps> = ({ text, steps, algorithm }) => {
             {/* Controls */}
             <div className="sticky top-0 z-20 backdrop-blur-sm flex items-center justify-between mb-8 bg-slate-900 p-5 rounded-lg border-2 border-slate-700">
                 <div className="flex items-center gap-3">
-                    <button onClick={() => setCurrentStepIndex(0)} className="p-3 hover:bg-slate-700 rounded-lg text-gray-300 transition-colors"><SkipBack size={24} /></button>
+                    <button onClick={() => setCurrentStepIndex(Math.max(0, currentStepIndex - 1))} className="p-3 hover:bg-slate-700 rounded-lg text-gray-300 transition-colors"><SkipBack size={24} /></button>
                     <button onClick={() => setIsPlaying(!isPlaying)} className="p-3 hover:bg-blue-700 rounded-lg text-white bg-blue-600 transition-colors shadow-xl shadow-blue-900/30">
                         {isPlaying ? <Pause size={24} /> : <Play size={24} />}
                     </button>
