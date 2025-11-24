@@ -21,18 +21,18 @@ const ALGORITHM_CODE: Record<Algorithm, string> = {
       if low >= high: #12
         updateMax(i, j) #13`,
     
-    expand_center: `function expandCenter(s):
-  n = length(s)
-  for i from 0 to n-1:
-    # Chuỗi lẻ
-    expand(i, i)
-    # Chuỗi chẵn
-    expand(i, i+1)
-    
-  function expand(l, r):
-    while l >= 0 and r < n and s[l] == s[r]:
-      updateMax(l, r)
-      l--, r++`,
+    expand_center: `function expandCenter(s): #1
+  n = length(s) #2
+  start, maxLen = 0, 1 #3 
+  if n == 0: return "" #4
+  for i from 0 to n-1: #5
+    for j from 0 to 2: #6
+      low = i, high = i + j #7
+      while low >= 0 and high < n: #8
+        if s[low] != s[high]: #9
+          break #10
+        updateMax(low, high) #11
+        low--, high++ #12`,
 
     dynamic_programming: `function dynamicProgramming(s):
   n = length(s)

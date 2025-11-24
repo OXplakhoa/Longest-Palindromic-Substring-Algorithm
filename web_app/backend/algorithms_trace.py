@@ -55,54 +55,33 @@ def trace_brute_force(s: str) -> Generator[Dict[str, Any], None, None]:
 
 def trace_expand_center(s: str) -> Generator[Dict[str, Any], None, None]:
     n = len(s)
-    yield {"type": "init", "description": "Bắt đầu Thuật toán Mở rộng quanh Tâm", "line": 1}
-    
-    # Handle empty string
+    yield {"type": "init", "description": "Bắt đầu Thuật toán Mở rộng quanh Tâm", "line": [1,2,3]}
+    start, maxLen = 0, 0
     if n == 0:
-        yield {"type": "result", "description": "Chuỗi rỗng - chuỗi đối xứng dài nhất là chuỗi rỗng", "line": 10, "start": 0, "end": 0, "length": 0}
+        yield {"type": "result", "description": "Chuỗi rỗng - chuỗi đối xứng dài nhất là chuỗi rỗng", "line": [4], "start": 0, "end": 0, "length": 0}
         return
-    
-    start_idx = 0
-    max_len = 0
-    
     for i in range(n):
-        # Odd length
-        yield {"type": "center", "index": i, "description": f"Mở rộng quanh tâm {i}", "line": 3}
-        l, r = i, i
-        while l >= 0 and r < n:
-            yield {"type": "compare", "indices": [l, r], "description": f"So sánh s[{l}] và s[{r}]", "line": 6}
-            if s[l] == s[r]:
-                yield {"type": "match", "indices": [l, r], "description": "Khớp", "line": 6}
-                if r - l + 1 > max_len:
-                    max_len = r - l + 1
-                    start_idx = l
-                    yield {"type": "update_max", "start": l, "end": r, "length": max_len, "description": f"Độ dài tối đa mới: {max_len}", "line": 8}
-                l -= 1
-                r += 1
-                yield {"type": "expand", "indices": [l, r], "description": "Mở rộng ra ngoài", "line": 9}
-            else:
-                yield {"type": "mismatch", "indices": [l, r], "description": "Không khớp", "line": 6}
-                break
-        
-        # Even length
-        l, r = i, i + 1
-        if r < n:
-            yield {"type": "center", "indices": [l, r], "description": f"Mở rộng quanh tâm {i}, {i+1}", "line": 4}
-            while l >= 0 and r < n:
-                yield {"type": "compare", "indices": [l, r], "description": f"So sánh s[{l}] và s[{r}]", "line": 6}
-                if s[l] == s[r]:
-                    yield {"type": "match", "indices": [l, r], "description": "Khớp", "line": 6}
-                    if r - l + 1 > max_len:
-                        max_len = r - l + 1
-                        start_idx = l
-                        yield {"type": "update_max", "start": l, "end": r, "length": max_len, "description": f"Độ dài tối đa mới: {max_len}", "line": 8}
-                    l -= 1
-                    r += 1
-                    yield {"type": "expand", "indices": [l, r], "description": "Mở rộng ra ngoài", "line": 9}
-                else:
-                    yield {"type": "mismatch", "indices": [l, r], "description": "Không khớp", "line": 6}
+        yield {"type": "loop_i", "description": f"Vòng lặp ngoài i={i}", "line": [5]}
+        for j in range(2):
+            yield {"type": "loop_j", "description": f"Vòng lặp trong j={j}", "line": [6]}
+            low, high = i, i + j
+            yield {"type": "check", "description": f"Khởi tạo con trỏ low={low} và high={high}", "line": [7]}
+            yield {"type": "loop_condition", "description": f"Kiểm tra điều kiện while: low={low}>=0 và high={high}<{n}", "line": [8]}
+            while low >= 0 and high < n:
+                yield {"type": "compare", "indices": [low, high], "description": f"So sánh s[{low}] và s[{high}]", "line": [9]}
+                if s[low] != s[high]:
+                    yield {"type": "mismatch", "indices": [low, high], "description": "Không khớp, thoát vòng lặp", "line": [10]}
                     break
-
+                currLen = high - low + 1
+                if currLen > maxLen:
+                    start = low
+                    maxLen = currLen
+                    yield {"type": "update_max", "start": low, "end": high, "length": maxLen, "description": f"Độ dài tối đa mới: {maxLen}", "line": [11]}
+                else:
+                    yield {"type": "found", "indices": [low, high], "description": "Tìm thấy chuỗi đối xứng, nhưng không dài hơn tối đa", "line": [11]}
+                yield {"type": "match", "indices": [low, high], "description": "Khớp, mở rộng sang 2 bên", "line": [12]}
+                low -= 1
+                high += 1
 def trace_dynamic_programming(s: str) -> Generator[Dict[str, Any], None, None]:
     n = len(s)
     yield {"type": "init", "description": "Bắt đầu Thuật toán Quy hoạch Động", "line": 1}
