@@ -13,7 +13,7 @@ export interface VisualizationStep {
     string?: string;
     row?: number;
     col?: number;
-    line?: number;
+    line?: number[];
 }
 
 export interface BenchmarkResult {

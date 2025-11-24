@@ -3,17 +3,23 @@ import type { Algorithm } from '../types';
 
 interface PseudoCodeProps {
     algorithm: Algorithm;
-    currentLine?: number;
+    currentLine?: number[];
 }
 
 const ALGORITHM_CODE: Record<Algorithm, string> = {
-    brute_force: `function bruteForce(s):
-  n = length(s)
-  for i from 0 to n-1:
-    for j from i to n-1:
-      checkPalindrome(s, i, j)
-      if isPalindrome:
-        updateMax(i, j)`,
+    brute_force: `function bruteForce(s): #1
+  n = length(s) #2
+  if n < 1: return "" #3
+  for i from 0 to n-1: #4
+    for j from i to n-1: #5
+      # Kiểm tra chuỗi con s[i:j+1] #6
+      low = i, high = j #7
+      while low < high: #8
+        if s[low] != s[high]: #9
+          break # Không phải là chuỗi đối xứng #10
+        low++, high-- #11
+      if low >= high: #12
+        updateMax(i, j) #13`,
     
     expand_center: `function expandCenter(s):
   n = length(s)
@@ -68,13 +74,13 @@ const PseudoCode: React.FC<PseudoCodeProps> = ({ algorithm, currentLine }) => {
                     <div 
                         key={idx} 
                         className={`px-3 py-2 rounded-md transition-all duration-300 ${
-                            (currentLine === idx + 1) 
+                            (currentLine?.includes(idx + 1)) 
                                 ? 'bg-gradient-to-r from-blue-900/80 to-blue-800/60 text-blue-50 border-l-4 border-blue-400 font-bold shadow-lg scale-105' 
                                 : 'text-gray-400 hover:text-gray-300 hover:bg-slate-800/50'
                         }`}
                     >
                         <span className="inline-block w-8 text-gray-600 select-none text-sm font-normal mr-3">{idx + 1}</span>
-                        <span className={currentLine === idx + 1 ? 'text-white' : ''}>{line}</span>
+                        <span className={currentLine?.includes(idx + 1) ? 'text-white' : ''}>{line}</span>
                     </div>
                 ))}
             </div>

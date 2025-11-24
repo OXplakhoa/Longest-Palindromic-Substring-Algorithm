@@ -9,36 +9,38 @@ def trace_brute_force(s: str) -> Generator[Dict[str, Any], None, None]:
     - None: Here is the ReturnType of Generator (None here means we don't return anything)
     """
     n = len(s)
-    yield {"type": "init", "description": "Bắt đầu Thuật toán Vét cạn", "line": 1}
+    yield {"type": "init", "description": "Bắt đầu Thuật toán Vét cạn", "line": [1,2]}
     
     # Handle empty string
     if n == 0:
-        yield {"type": "result", "description": "Chuỗi rỗng - chuỗi đối xứng dài nhất là chuỗi rỗng", "line": 7, "start": 0, "end": 0, "length": 0}
+        yield {"type": "result", "description": "Chuỗi rỗng - chuỗi đối xứng dài nhất là chuỗi rỗng", "line": 3, "start": 0, "end": 0, "length": 0}
         return
     
     max_len = 0
     start_idx = 0
     
     for i in range(n):
-        yield {"type": "loop_i", "description": f"Vòng lặp ngoài i={i}", "line": 2}
+        yield {"type": "loop_i", "description": f"Vòng lặp ngoài i={i}", "line": [4]}
         for j in range(i, n):
+            yield {"type": "loop_j", "description": f"Vòng lặp trong j={j}", "line": [5]}
             # Highlight the substring being checked
-            yield {"type": "select", "indices": [i, j], "description": f"Kiểm tra chuỗi con s[{i}:{j+1}]", "line": 3}
+            yield {"type": "select", "indices": [i, j], "description": f"Kiểm tra chuỗi con s[{i}:{j+1}]", "line": [6]}
             
             # Check if palindrome
             low, high = i, j
             is_palindrome = True
-            yield {"type": "check", "description": "Kiểm tra có phải chuỗi đối xứng...", "line": 4}
+            yield {"type": "check", "description": f"Khởi tạo con trỏ low={i} và high={j}", "line": [7]}
             while low < high:
+                yield {"type": "loop_low_high", "description": f"Vòng lặp trong low={low} và high={high}", "line": [8]}
                 # Highlight comparison
-                yield {"type": "compare", "indices": [low, high], "description": f"So sánh s[{low}] và s[{high}]", "line": 4}
+                yield {"type": "compare", "indices": [low, high], "description": f"So sánh s[{low}] và s[{high}]", "line": [9]}
                 
                 if s[low] != s[high]:
-                    yield {"type": "mismatch", "indices": [low, high], "description": "Tìm thấy không khớp", "line": 4}
+                    yield {"type": "mismatch", "indices": [low, high], "description": "Không khóp, thoát vòng lặp", "line": [10]}
                     is_palindrome = False
                     break
                 
-                yield {"type": "match", "indices": [low, high], "description": "Tìm thấy khớp", "line": 4}
+                yield {"type": "match", "indices": [low, high], "description": "Khớp và dịch chuyển 2 con trỏ", "line": [11]}
                 low += 1
                 high -= 1
             
@@ -47,9 +49,9 @@ def trace_brute_force(s: str) -> Generator[Dict[str, Any], None, None]:
                 if curr_len > max_len:
                     max_len = curr_len
                     start_idx = i
-                    yield {"type": "update_max", "start": i, "end": j, "length": max_len, "description": f"Độ dài tối đa mới: {max_len}", "line": 6}
+                    yield {"type": "update_max", "start": i, "end": j, "length": max_len, "description": f"Độ dài tối đa mới: {max_len}", "line": [13]}
                 else:
-                     yield {"type": "found", "indices": [i, j], "description": "Tìm thấy chuỗi đối xứng, nhưng không dài hơn tối đa", "line": 5}
+                    yield {"type": "found", "indices": [i, j], "description": "Tìm thấy chuỗi đối xứng, nhưng không dài hơn tối đa", "line": [12]}
 
 def trace_expand_center(s: str) -> Generator[Dict[str, Any], None, None]:
     n = len(s)
