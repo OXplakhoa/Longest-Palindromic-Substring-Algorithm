@@ -13,7 +13,7 @@ def trace_brute_force(s: str) -> Generator[Dict[str, Any], None, None]:
     
     # Handle empty string
     if n == 0:
-        yield {"type": "result", "description": "Chuỗi rỗng - chuỗi đối xứng dài nhất là chuỗi rỗng", "line": 3, "start": 0, "end": 0, "length": 0}
+        yield {"type": "result", "description": "Chuỗi rỗng - chuỗi đối xứng dài nhất là chuỗi rỗng", "line": [3], "start": 0, "end": 0, "length": 0}
         return
     
     max_len = 0
