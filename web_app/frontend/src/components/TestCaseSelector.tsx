@@ -29,12 +29,12 @@ const TestCaseSelector: React.FC<TestCaseSelectorProps> = ({ onSelectTestCase })
     };
 
     return (
-        <div className="bg-slate-800 rounded-lg shadow-lg p-5 sticky top-4 max-h-[calc(100vh-2rem)] overflow-y-auto">
-            <div className="flex items-center gap-2 mb-4 pb-3 border-b border-slate-700">
-                <div className="bg-gradient-to-br from-purple-500 to-pink-600 p-2 rounded-lg">
-                    <Beaker size={20} className="text-white" />
+        <div className="bg-slate-800 rounded-lg shadow-lg p-4 sticky top-4 max-h-[calc(100vh-280px)] overflow-y-auto">
+            <div className="flex items-center gap-2 mb-3 pb-2 border-b border-slate-700">
+                <div className="bg-gradient-to-br from-purple-500 to-pink-600 p-1.5 rounded-lg">
+                    <Beaker size={16} className="text-white" />
                 </div>
-                <h2 className="text-lg font-bold text-purple-400">Bộ kiểm thử</h2>
+                <h2 className="text-base font-bold text-purple-400">Bộ kiểm thử</h2>
             </div>
 
             <div className="space-y-3">
@@ -65,7 +65,7 @@ const TestCaseSelector: React.FC<TestCaseSelectorProps> = ({ onSelectTestCase })
                                         <button
                                             key={testCase.id}
                                             onClick={() => handleSelectTestCase(testCase)}
-                                            className="w-full text-left p-3 bg-slate-900/50 hover:bg-slate-700/70 rounded border border-slate-600/50 hover:border-purple-500/50 transition-all group"
+                                            className="w-full text-left p-2 bg-slate-900/50 hover:bg-slate-700/70 rounded border border-slate-600/50 hover:border-purple-500/50 transition-all group"
                                         >
                                             <div className="flex items-start justify-between gap-2 mb-1">
                                                 <span className="text-xs font-semibold text-purple-300 group-hover:text-purple-200">

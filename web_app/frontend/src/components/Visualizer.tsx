@@ -114,7 +114,7 @@ const Visualizer: React.FC<VisualizerProps> = ({ text, steps, algorithm }) => {
         }
 
         return clsx(
-            'w-14 h-14 flex items-center justify-center border-2 rounded-lg font-mono text-2xl font-bold relative',
+            'w-16 h-16 flex items-center justify-center border-2 rounded-xl font-mono text-2xl font-bold relative shadow-lg',
             styles
         );
     };
@@ -216,12 +216,12 @@ const Visualizer: React.FC<VisualizerProps> = ({ text, steps, algorithm }) => {
                 {/* RIGHT SIDE: Pseudo-code + Execution Log */}
                 <div className="flex flex-col gap-6">
                     {/* Pseudo-Code */}
-                    <div className="h-[350px]">
+                    <div className="h-[420px]">
                         <PseudoCode algorithm={algorithm} currentLine={currentStep?.line} />
                     </div>
 
                     {/* Execution Log */}
-                    <div className="h-[350px]">
+                    <div className="h-[300px]">
                         <StepLog steps={steps} currentIndex={currentStepIndex} />
                     </div>
                 </div>

@@ -80,18 +80,13 @@ function App() {
                 </div>
             </header>
 
-            {/* 3-Column Layout */}
-            <div className="max-w-[80%] mx-auto px-4 py-6">
-                <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr_360px] gap-8">
-                    {/* Left Sidebar - Algorithm Info */}
-                    <aside className="hidden lg:block">
-                        <AlgorithmInfo algorithm={algorithm} />
-                    </aside>
-
-                    {/* Main Content */}
-                    <main className="min-w-0">
+            {/* 2-Column Layout - Optimized for MacBook */}
+            <div className="max-w-[95%] mx-auto px-6 py-6">
+                <div className="grid grid-cols-1 xl:grid-cols-[1fr_320px] gap-6">
+                    {/* Main Content - Takes most of the space */}
+                    <main className="min-w-0 space-y-6">
                         {error && (
-                            <div className="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded mb-6">
+                            <div className="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded">
                                 {error}
                             </div>
                         )}
@@ -116,12 +111,13 @@ function App() {
 
                         <Benchmark
                             results={benchmarkResults}
-                            loading={loading && !steps.length} // Show loading in benchmark area if not visualizing
+                            loading={loading && !steps.length}
                         />
                     </main>
 
-                    {/* Right Sidebar - Test Case Selector */}
-                    <aside className="hidden lg:block">
+                    {/* Right Sidebar - Combined Info + Test Cases */}
+                    <aside className="hidden xl:flex flex-col gap-4">
+                        <AlgorithmInfo algorithm={algorithm} />
                         <TestCaseSelector onSelectTestCase={handleSelectTestCase} />
                     </aside>
                 </div>

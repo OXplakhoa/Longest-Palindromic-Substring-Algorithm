@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import type { Algorithm } from '../types';
 
 interface PseudoCodeProps {
@@ -59,14 +59,30 @@ const ALGORITHM_CODE: Record<Algorithm, string> = {
 
 const PseudoCode: React.FC<PseudoCodeProps> = ({ algorithm, currentLine }) => {
     const codeLines = ALGORITHM_CODE[algorithm].split('\n');
+    const lineRefs = useRef<(HTMLDivElement | null)[]>([]);
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    // Auto-scroll to active line
+    useEffect(() => {
+        if (currentLine !== undefined && currentLine > 0 && lineRefs.current[currentLine - 1]) {
+            lineRefs.current[currentLine - 1]?.scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest'
+            });
+        }
+    }, [currentLine]);
 
     return (
-        <div className="bg-slate-900 p-5 rounded-lg font-mono text-base h-full overflow-auto border border-slate-700">
-            <h3 className="text-gray-300 mb-4 font-bold uppercase text-sm tracking-wider">Mã giả</h3>
+        <div 
+            ref={containerRef}
+            className="bg-slate-900 p-5 rounded-lg font-mono text-base h-full overflow-auto border border-slate-700 scroll-smooth"
+        >
+            <h3 className="text-gray-300 mb-4 font-bold uppercase text-sm tracking-wider sticky top-0 bg-slate-900 py-2 z-10">Mã giả</h3>
             <div className="flex flex-col gap-1">
                 {codeLines.map((line, idx) => (
                     <div 
-                        key={idx} 
+                        key={idx}
+                        ref={el => { lineRefs.current[idx] = el; }}
                         className={`px-3 py-2 rounded-md transition-all duration-300 ${
                             (currentLine === idx + 1) 
                                 ? 'bg-gradient-to-r from-blue-900/80 to-blue-800/60 text-blue-50 border-l-4 border-blue-400 font-bold shadow-lg scale-105' 
@@ -83,3 +99,4 @@ const PseudoCode: React.FC<PseudoCodeProps> = ({ algorithm, currentLine }) => {
 };
 
 export default PseudoCode;
+

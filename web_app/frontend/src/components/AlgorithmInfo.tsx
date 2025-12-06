@@ -86,33 +86,33 @@ const AlgorithmInfo: React.FC<AlgorithmInfoProps> = ({ algorithm }) => {
     const info = algorithmData[algorithm];
 
     return (
-        <div className="bg-slate-800 rounded-lg shadow-lg p-5 sticky top-4">
-            <div className="flex items-center gap-2 mb-4 pb-3 border-b border-slate-700">
-                <div className="bg-gradient-to-br from-blue-500 to-purple-600 p-2 rounded-lg">
-                    <Info size={20} className="text-white" />
+        <div className="bg-slate-800 rounded-lg shadow-lg p-4 sticky top-4">
+            <div className="flex items-center gap-2 mb-3 pb-2 border-b border-slate-700">
+                <div className="bg-gradient-to-br from-blue-500 to-purple-600 p-1.5 rounded-lg">
+                    <Info size={16} className="text-white" />
                 </div>
-                <h2 className="text-lg font-bold text-blue-400">Thông tin Thuật toán</h2>
+                <h2 className="text-base font-bold text-blue-400">Thông tin Thuật toán</h2>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
                 <div>
-                    <h3 className="text-xl font-bold text-white mb-2">{info.name}</h3>
-                    <p className="text-sm text-slate-300 leading-relaxed">{info.description}</p>
+                    <h3 className="text-lg font-bold text-white mb-1">{info.name}</h3>
+                    <p className="text-xs text-slate-300 leading-relaxed">{info.description}</p>
                 </div>
 
-                <div className="space-y-2">
-                    <div className="flex items-start gap-2 bg-slate-700/50 p-3 rounded">
-                        <Clock size={16} className="text-blue-400 mt-0.5 flex-shrink-0" />
+                <div className="space-y-1.5">
+                    <div className="flex items-start gap-2 bg-slate-700/50 p-2 rounded">
+                        <Clock size={14} className="text-blue-400 mt-0.5 flex-shrink-0" />
                         <div>
-                            <div className="text-xs text-slate-400">Độ phức tạp Thời gian</div>
-                            <div className="font-mono font-bold text-blue-300">{info.timeComplexity}</div>
+                            <div className="text-xs text-slate-400">Thời gian</div>
+                            <div className="font-mono font-bold text-blue-300 text-sm">{info.timeComplexity}</div>
                         </div>
                     </div>
-                    <div className="flex items-start gap-2 bg-slate-700/50 p-3 rounded">
-                        <Database size={16} className="text-purple-400 mt-0.5 flex-shrink-0" />
+                    <div className="flex items-start gap-2 bg-slate-700/50 p-2 rounded">
+                        <Database size={14} className="text-purple-400 mt-0.5 flex-shrink-0" />
                         <div>
-                            <div className="text-xs text-slate-400">Độ phức tạp Bộ nhớ</div>
-                            <div className="font-mono font-bold text-purple-300">{info.spaceComplexity}</div>
+                            <div className="text-xs text-slate-400">Bộ nhớ</div>
+                            <div className="font-mono font-bold text-purple-300 text-sm">{info.spaceComplexity}</div>
                         </div>
                     </div>
                 </div>
